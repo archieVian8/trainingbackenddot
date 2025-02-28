@@ -4,7 +4,11 @@ import "gorm.io/gorm"
 
 type Studio struct {
 	gorm.Model
-	Name       string `gorm:"unique;not null"`
+	Name       string `gorm:"not null"`
 	Capacity   int    `gorm:"not null"`
 	Facilities string
+}
+
+func (Studio) TableName() string {
+	return "studios"
 }
