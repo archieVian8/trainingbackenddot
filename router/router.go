@@ -9,7 +9,8 @@ import (
 func SetupRouter(
 	adminHandler *http.AdminHandler,
 	userHandler *http.UserHandler,
-	studioHandler *http.StudioHandler) *gin.Engine {
+	studioHandler *http.StudioHandler,
+	filmHandler *http.FilmHandler) *gin.Engine {
 	router := gin.Default()
 
 	api := router.Group("/api")
@@ -29,11 +30,20 @@ func SetupRouter(
 				studios.DELETE("/:id", studioHandler.DeleteStudio)
 				studios.GET("/viewall", studioHandler.GetAllStudios)
 			}
+
+			// Film Management (Admin Only)
+			film := admin.Group("/films")
+			{
+				film.POST("", filmHandler.AddFilm)
+				film.PUT("/:id", filmHandler.UpdateFilm)
+				film.DELETE("/:id", filmHandler.DeleteFilm)
+				film.GET("/viewall", filmHandler.GetAllFilms)
+			}
 		}
 
 		user := api.Group("/user")
 		{
-			// Admin Auth
+			// User Auth
 			user.POST("/signup", userHandler.SignupUser)
 			user.POST("/signin", userHandler.SigninUser)
 			user.GET("/viewall", userHandler.ViewAllUsers)

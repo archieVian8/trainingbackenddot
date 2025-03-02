@@ -17,7 +17,7 @@ func NewStudioHandler(studioUC *usecase.StudioUsecase) *StudioHandler {
 	return &StudioHandler{StudioUC: studioUC}
 }
 
-// Create Studio
+// Endpoint Create Studio
 func (h *StudioHandler) CreateStudio(c *gin.Context) {
 	var studio domain.Studio
 	if err := c.ShouldBindJSON(&studio); err != nil {
@@ -33,7 +33,7 @@ func (h *StudioHandler) CreateStudio(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Studio successfully added"})
 }
 
-// View All Studio
+// Endpoint View All Studio
 func (h *StudioHandler) GetAllStudios(c *gin.Context) {
 	studios, err := h.StudioUC.GetAllStudios()
 	if err != nil {
@@ -43,7 +43,7 @@ func (h *StudioHandler) GetAllStudios(c *gin.Context) {
 	c.JSON(http.StatusOK, studios)
 }
 
-// Update Studio
+// Endpoint Update Studio
 func (h *StudioHandler) UpdateStudio(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
@@ -65,7 +65,7 @@ func (h *StudioHandler) UpdateStudio(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Studio successfully updated"})
 }
 
-// Delete Studio
+// Endpoint Delete Studio
 func (h *StudioHandler) DeleteStudio(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
