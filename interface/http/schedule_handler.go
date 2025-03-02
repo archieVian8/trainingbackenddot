@@ -3,6 +3,7 @@ package http
 import (
 	"net/http"
 	"strconv"
+	"time"
 	"trainingbackenddot/domain"
 	"trainingbackenddot/usecase"
 
@@ -83,4 +84,44 @@ func (h *ScheduleHandler) DeleteSchedule(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Schedule deleted successfully"})
+}
+
+// Create New Promo
+func (h *ScheduleHandler) ApplyPromo(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid schedule ID"})
+		return
+	}
+
+	var promoData struct {
+		Promo     int    `json:"promo"`
+		PromoTime string `json:"promo_time"`
+		PromoEnds string `json:"promo_ends"`
+	}
+
+	if err := c.ShouldBindJSON(&promoData); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	promoStart, err := time.Parse("2006-01-02 15:04:05", promoData.PromoTime)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid promo_time format, use YYYY-MM-DD HH:MM:SS"})
+		return
+	}
+
+	promoEnd, err := time.Parse("2006-01-02 15:04:05", promoData.PromoEnds)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid promo_ends format, use YYYY-MM-DD HH:MM:SS"})
+		return
+	}
+
+	err = h.ScheduleUC.ApplyPromo(uint(id), promoData.Promo, promoStart, promoEnd)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to apply promo"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Promo applied successfully"})
 }

@@ -1,6 +1,7 @@
 package db
 
 import (
+	"time"
 	"trainingbackenddot/domain"
 
 	"gorm.io/gorm"
@@ -37,4 +38,21 @@ func (r *ScheduleRepository) UpdateSchedule(id uint, updatedSchedule *domain.Sch
 // Delete Schedule
 func (r *ScheduleRepository) DeleteSchedule(id uint) error {
 	return r.DB.Where("id = ?", id).Delete(&domain.Schedule{}).Error
+}
+
+// Create Promo
+func (r *ScheduleRepository) SetPromo(id uint, promo int, promoTime, promoEnds time.Time) error {
+	var schedule domain.Schedule
+	if err := r.DB.First(&schedule, id).Error; err != nil {
+		return err
+	}
+
+	promoPrice := schedule.Price - (schedule.Price * float64(promo) / 100)
+
+	return r.DB.Model(&schedule).Updates(map[string]interface{}{
+		"Promo":      promo,
+		"PromoPrice": promoPrice,
+		"PromoTime":  promoTime,
+		"PromoEnds":  promoEnds,
+	}).Error
 }

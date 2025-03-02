@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"time"
 	"trainingbackenddot/domain"
 	"trainingbackenddot/infrastructure/db"
 )
@@ -31,4 +32,9 @@ func (u *ScheduleUsecase) UpdateSchedule(id uint, updatedSchedule *domain.Schedu
 // Function for Delete Schedule
 func (u *ScheduleUsecase) DeleteSchedule(id uint) error {
 	return u.ScheduleRepo.DeleteSchedule(id)
+}
+
+// Function for Create Promo
+func (u *ScheduleUsecase) ApplyPromo(id uint, promo int, promoTime, promoEnds time.Time) error {
+	return u.ScheduleRepo.SetPromo(id, promo, promoTime, promoEnds)
 }

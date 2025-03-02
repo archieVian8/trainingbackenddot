@@ -48,6 +48,7 @@ func SetupRouter(
 				schedule.PUT("/:id", scheduleHandler.UpdateSchedule)
 				schedule.DELETE("/:id", scheduleHandler.DeleteSchedule)
 				schedule.GET("/viewall", scheduleHandler.ViewAllSchedules)
+				schedule.POST("promo/:id", scheduleHandler.ApplyPromo)
 			}
 
 		}
@@ -58,6 +59,12 @@ func SetupRouter(
 			user.POST("/signup", userHandler.SignupUser)
 			user.POST("/signin", userHandler.SigninUser)
 			user.GET("/viewall", userHandler.ViewAllUsers)
+
+			// User view Schedule
+			schedule := user.Group("/schedules")
+			{
+				schedule.GET("/viewall", scheduleHandler.ViewAllSchedules)
+			}
 		}
 	}
 
