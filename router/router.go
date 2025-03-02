@@ -10,7 +10,8 @@ func SetupRouter(
 	adminHandler *http.AdminHandler,
 	userHandler *http.UserHandler,
 	studioHandler *http.StudioHandler,
-	filmHandler *http.FilmHandler) *gin.Engine {
+	filmHandler *http.FilmHandler,
+	scheduleHandler *http.ScheduleHandler) *gin.Engine {
 	router := gin.Default()
 
 	api := router.Group("/api")
@@ -39,6 +40,16 @@ func SetupRouter(
 				film.DELETE("/:id", filmHandler.DeleteFilm)
 				film.GET("/viewall", filmHandler.GetAllFilms)
 			}
+
+			// Movie Schedule Management (Admin Only)
+			schedule := admin.Group("/schedules")
+			{
+				schedule.POST("/", scheduleHandler.CreateSchedule)
+				schedule.PUT("/:id", scheduleHandler.UpdateSchedule)
+				schedule.DELETE("/:id", scheduleHandler.DeleteSchedule)
+				schedule.GET("/viewall", scheduleHandler.ViewAllSchedules)
+			}
+
 		}
 
 		user := api.Group("/user")

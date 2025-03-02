@@ -19,21 +19,24 @@ func main() {
 	userRepo := db.NewUserRepository(config.DB)
 	studioRepo := db.NewStudioRepository(config.DB)
 	filmRepo := db.NewFilmRepository(config.DB)
+	scheduleRepo := db.NewScheduleRepository(config.DB)
 
 	// UseCase Initialization
 	adminUC := usecase.NewAdminUseCase(adminRepo)
 	userUC := usecase.NewUserUseCase(userRepo)
 	studioUC := usecase.NewStudioUsecase(studioRepo)
 	filmUC := usecase.NewFilmUsecase(filmRepo)
+	scheduleUC := usecase.NewScheduleUsecase(scheduleRepo)
 
 	// Handler Initialization
 	adminHandler := http.NewAdminHandler(adminUC)
 	userHandler := http.NewUserHandler(userUC)
 	studioHandler := http.NewStudioHandler(studioUC)
 	filmHandler := http.NewFilmHandler(filmUC)
+	scheduleHandler := http.NewScheduleHandler(scheduleUC)
 
 	// Router Setup
-	r := router.SetupRouter(adminHandler, userHandler, studioHandler, filmHandler)
+	r := router.SetupRouter(adminHandler, userHandler, studioHandler, filmHandler, scheduleHandler)
 
 	// Running the Server
 	fmt.Println("The server is running on http://localhost:3000")
