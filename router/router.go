@@ -11,7 +11,9 @@ func SetupRouter(
 	userHandler *http.UserHandler,
 	studioHandler *http.StudioHandler,
 	filmHandler *http.FilmHandler,
-	scheduleHandler *http.ScheduleHandler) *gin.Engine {
+	scheduleHandler *http.ScheduleHandler,
+	ticketHandler *http.TicketHandler,
+	transactionHandler *http.TransactionHandler) *gin.Engine {
 	router := gin.Default()
 
 	api := router.Group("/api")
@@ -51,6 +53,12 @@ func SetupRouter(
 				schedule.POST("promo/:id", scheduleHandler.ApplyPromo)
 			}
 
+			// View All Transactions (Admin Only)
+			transactions := admin.Group("/transactions")
+			{
+				transactions.GET("/viewall", transactionHandler.ViewAllTransactions)
+			}
+
 		}
 
 		user := api.Group("/user")
@@ -64,6 +72,19 @@ func SetupRouter(
 			schedule := user.Group("/schedules")
 			{
 				schedule.GET("/viewall", scheduleHandler.ViewAllSchedules)
+			}
+
+			// Ticketing
+			ticket := user.Group("/tickets")
+			{
+				ticket.POST("/book", ticketHandler.BookTicket)
+				ticket.GET("/:id", ticketHandler.GetTicket)
+			}
+
+			// Transaction (User)
+			transaction := user.Group("/transactions")
+			{
+				transaction.POST("/pay/:id", transactionHandler.PayTicket)
 			}
 		}
 	}

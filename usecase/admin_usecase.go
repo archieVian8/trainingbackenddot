@@ -16,7 +16,7 @@ func NewAdminUseCase(adminRepo *db.AdminRepository) *AdminUseCase {
 	return &AdminUseCase{AdminRepo: adminRepo}
 }
 
-// Signup Admin
+// Function for Signup Admin
 func (uc *AdminUseCase) SignupAdmin(admin *domain.Admin) error {
 	hashedPassword, err := hashPassword(admin.Password)
 	if err != nil {
@@ -27,7 +27,7 @@ func (uc *AdminUseCase) SignupAdmin(admin *domain.Admin) error {
 	return uc.AdminRepo.CreateAdmin(admin)
 }
 
-// Sigin Admin
+// Function for Sigin Admin
 func (uc *AdminUseCase) SigninAdmin(email, password string) (*domain.Admin, error) {
 	admin, err := uc.AdminRepo.GetAdminByEmail(email)
 	if err != nil {

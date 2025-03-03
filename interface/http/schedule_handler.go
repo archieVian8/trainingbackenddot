@@ -18,7 +18,7 @@ func NewScheduleHandler(scheduleoUC *usecase.ScheduleUsecase) *ScheduleHandler {
 	return &ScheduleHandler{ScheduleUC: scheduleoUC}
 }
 
-// Create New Schedule
+// Endpoint Create New Schedule
 func (h *ScheduleHandler) CreateSchedule(c *gin.Context) {
 	var schedule domain.Schedule
 	if err := c.ShouldBindJSON(&schedule); err != nil {
@@ -35,7 +35,7 @@ func (h *ScheduleHandler) CreateSchedule(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Schedule created successfully"})
 }
 
-// View All Schedules
+// Endpoint View All Schedules
 func (h *ScheduleHandler) ViewAllSchedules(c *gin.Context) {
 	schedules, err := h.ScheduleUC.ViewAllSchedules()
 	if err != nil {
@@ -46,7 +46,7 @@ func (h *ScheduleHandler) ViewAllSchedules(c *gin.Context) {
 	c.JSON(http.StatusOK, schedules)
 }
 
-// Update Schedule
+// Endpoint Update Schedule
 func (h *ScheduleHandler) UpdateSchedule(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -69,7 +69,7 @@ func (h *ScheduleHandler) UpdateSchedule(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Schedule updated successfully"})
 }
 
-// Delete Schedule
+// Endpoint Delete Schedule
 func (h *ScheduleHandler) DeleteSchedule(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -86,7 +86,7 @@ func (h *ScheduleHandler) DeleteSchedule(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Schedule deleted successfully"})
 }
 
-// Create New Promo
+// Endpoint Create New Promo
 func (h *ScheduleHandler) ApplyPromo(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

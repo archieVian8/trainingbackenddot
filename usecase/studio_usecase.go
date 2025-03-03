@@ -13,22 +13,22 @@ func NewStudioUsecase(studioRepo *db.StudioRepository) *StudioUsecase {
 	return &StudioUsecase{StudioRepo: studioRepo}
 }
 
-// Create Studio
+// Function for Create Studio
 func (u *StudioUsecase) CreateStudio(studio *domain.Studio) error {
 	return u.StudioRepo.CreateStudio(studio)
 }
 
-// View All Studio
+// Function for View All Studio
 func (u *StudioUsecase) GetAllStudios() ([]domain.Studio, error) {
 	return u.StudioRepo.GetAllStudios()
 }
 
-// Update Studio
+// Function for Update Studio
 func (u *StudioUsecase) UpdateStudio(id uint, updatedStudio *domain.Studio) error {
 	return u.StudioRepo.UpdateStudio(id, updatedStudio)
 }
 
-// Delete Studio
+// Function for Delete Studio
 func (u *StudioUsecase) DeleteStudio(id uint) error {
 	return u.StudioRepo.DeleteStudio(id)
 }

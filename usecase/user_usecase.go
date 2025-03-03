@@ -14,7 +14,7 @@ func NewUserUseCase(userRepo *db.UserRepository) *UserUseCase {
 	return &UserUseCase{UserRepo: userRepo}
 }
 
-// Signup User
+// Function for Signup User
 func (uc *UserUseCase) SignupUser(user *domain.User) error {
 	hashedPassword, err := hashPassword(user.Password)
 	if err != nil {
@@ -25,7 +25,7 @@ func (uc *UserUseCase) SignupUser(user *domain.User) error {
 	return uc.UserRepo.CreateUser(user)
 }
 
-// Signin User
+// Function for Signin User
 func (uc *UserUseCase) SigninUser(email, password string) (*domain.User, error) {
 	user, err := uc.UserRepo.GetUserByEmail(email)
 	if err != nil {
