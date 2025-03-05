@@ -27,7 +27,18 @@ func (r *ScheduleRepository) GetAllSchedules() ([]domain.Schedule, error) {
 		Preload("Studio").
 		Preload("Film").
 		Find(&schedules).Error
-	return schedules, err
+
+	if err != nil {
+		return nil, err
+	}
+
+	for i := range schedules {
+		if schedules[i].PromoPrice == 0 {
+			schedules[i].PromoPrice = schedules[i].Price
+		}
+	}
+
+	return schedules, nil
 }
 
 // Update Schedule
@@ -55,4 +66,13 @@ func (r *ScheduleRepository) SetPromo(id uint, promo int, promoTime, promoEnds t
 		"PromoTime":  promoTime,
 		"PromoEnds":  promoEnds,
 	}).Error
+}
+
+// Get schedule by ID
+func (r *ScheduleRepository) GetByID(id uint) (*domain.Schedule, error) {
+	var schedule domain.Schedule
+	if err := r.DB.Where("id = ?", id).Preload("Studio").First(&schedule).Error; err != nil {
+		return nil, err
+	}
+	return &schedule, nil
 }

@@ -81,7 +81,7 @@ func SetupRouter(
 				ticket.GET("/:id", ticketHandler.GetTicket)
 			}
 
-			// Transaction (User)
+			// Transaction
 			transaction := user.Group("/transactions")
 			{
 				transaction.POST("/pay/:id", transactionHandler.PayTicket)

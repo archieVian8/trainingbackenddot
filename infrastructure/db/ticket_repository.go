@@ -16,13 +16,24 @@ func NewTicketRepository(db *gorm.DB) *TicketRepository {
 
 // Create a new ticket
 func (r *TicketRepository) Create(ticket *domain.Ticket) error {
-	return r.DB.Create(ticket).Error
+	if err := r.DB.Create(ticket).Error; err != nil {
+		return err
+	}
+
+	return r.DB.Preload("Schedule").Preload("Schedule.Studio").Preload("Schedule.Film").
+		First(ticket, ticket.ID).Error
 }
 
 // Get tickets by ID
-func (r *TicketRepository) GetByID(id uint) (*domain.Ticket, error) {
+func (r *TicketRepository) GetByID(ticketID uint) (*domain.Ticket, error) {
 	var ticket domain.Ticket
-	if err := r.DB.First(&ticket, id).Error; err != nil {
+	err := r.DB.
+		Preload("Schedule").
+		Preload("Schedule.Studio").
+		Preload("Schedule.Film").
+		Where("id = ?", ticketID).
+		First(&ticket).Error
+	if err != nil {
 		return nil, err
 	}
 	return &ticket, nil
@@ -31,7 +42,13 @@ func (r *TicketRepository) GetByID(id uint) (*domain.Ticket, error) {
 // Get tickets based on schedule and seat number
 func (r *TicketRepository) GetByScheduleAndSeat(scheduleID uint, seatNumber string) (*domain.Ticket, error) {
 	var ticket domain.Ticket
-	if err := r.DB.Where("schedule_id = ? AND seat_number = ?", scheduleID, seatNumber).First(&ticket).Error; err != nil {
+	err := r.DB.
+		Preload("Schedule").
+		Preload("Schedule.Studio").
+		Preload("Schedule.Film").
+		Where("schedule_id = ? AND seat_number = ?", scheduleID, seatNumber).
+		First(&ticket).Error
+	if err != nil {
 		return nil, err
 	}
 	return &ticket, nil

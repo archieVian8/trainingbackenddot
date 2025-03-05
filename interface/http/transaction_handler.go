@@ -19,28 +19,33 @@ func NewTransactionHandler(transactionUC usecase.TransactionUsecase) *Transactio
 
 // Endpoint Ticket Payment
 func (h *TransactionHandler) PayTicket(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid transaction ID"})
-		return
-	}
-
 	var request struct {
-		PaymentMethod string `json:"payment_method"`
+		UserID        uint    `json:"user_id"`
+		PaymentMethod string  `json:"payment_method"`
+		Amount        float64 `json:"amount"`
 	}
 
 	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
 		return
 	}
 
-	err = h.TransactionUC.PayTicket(uint(id), request.PaymentMethod)
+	ticketID, err := strconv.ParseUint(c.Param("ticket_id"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to process payment"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid ticket ID"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Payment successful"})
+	transaction, message, err := h.TransactionUC.ProcessPayment(uint(ticketID), request.UserID, request.PaymentMethod, request.Amount)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": message})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message":     message,
+		"transaction": transaction,
+	})
 }
 
 // Endpoint Admin View All Transactions

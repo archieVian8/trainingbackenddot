@@ -35,3 +35,17 @@ func (r *StudioRepository) UpdateStudio(id uint, updatedStudio *domain.Studio) e
 func (r *StudioRepository) DeleteStudio(id uint) error {
 	return r.DB.Delete(&domain.Studio{}, id).Error
 }
+
+// Get studio by ID
+func (r *StudioRepository) GetByID(studioID uint) (*domain.Studio, error) {
+	var studio domain.Studio
+	if err := r.DB.First(&studio, studioID).Error; err != nil {
+		return nil, err
+	}
+	return &studio, nil
+}
+
+// Update studio capacity
+func (r *StudioRepository) Update(studio *domain.Studio) error {
+	return r.DB.Save(studio).Error
+}

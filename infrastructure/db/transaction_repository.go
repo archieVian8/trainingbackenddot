@@ -31,8 +31,16 @@ func (r *TransactionRepository) GetByTicketID(ticketID uint) (*domain.Transactio
 // Get all transactions (admin only)
 func (r *TransactionRepository) GetAll() ([]domain.Transaction, error) {
 	var transactions []domain.Transaction
-	if err := r.DB.Find(&transactions).Error; err != nil {
-		return nil, err
-	}
-	return transactions, nil
+	err := r.DB.
+		Preload("Ticket").
+		Preload("Ticket.Schedule").
+		Preload("Ticket.Schedule.Studio").
+		Preload("Ticket.Schedule.Film").
+		Find(&transactions).Error
+	return transactions, err
+}
+
+// Update an existing transaction
+func (r *TransactionRepository) Update(transaction *domain.Transaction) error {
+	return r.DB.Save(transaction).Error
 }

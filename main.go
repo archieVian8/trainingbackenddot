@@ -29,8 +29,8 @@ func main() {
 	studioUC := usecase.NewStudioUsecase(studioRepo)
 	filmUC := usecase.NewFilmUsecase(filmRepo)
 	scheduleUC := usecase.NewScheduleUsecase(scheduleRepo)
-	ticketUC := usecase.NewTicketUsecase(ticketRepo)
-	transactionUC := usecase.NewTransactionUsecase(transactionRepo, ticketRepo)
+	ticketUC := usecase.NewTicketUsecase(ticketRepo, scheduleRepo)
+	transactionUC := usecase.NewTransactionUsecase(transactionRepo, ticketRepo, scheduleRepo, studioRepo)
 
 	// Handler Initialization
 	adminHandler := http.NewAdminHandler(adminUC)

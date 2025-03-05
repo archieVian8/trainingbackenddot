@@ -3,6 +3,7 @@ package http
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"trainingbackenddot/usecase"
 
@@ -31,7 +32,7 @@ func (h *TicketHandler) BookTicket(c *gin.Context) {
 	}
 
 	// Ticket booking process
-	ticket, err := h.TicketUC.BookTicket(request.ScheduleID, request.UserID, request.SeatNumber)
+	ticket, err := h.TicketUC.BookTicket(request.ScheduleID, request.UserID, strings.Split(request.SeatNumber, ","))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to book ticket"})
 		return
