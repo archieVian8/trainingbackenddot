@@ -128,6 +128,11 @@ func (u *transactionUsecase) ProcessPayment(ticketID uint, userID uint, paymentM
 		return nil, "Payment failed, money less than price", errors.New("amount less than price")
 	}
 
+	existingTransaction, err := u.TransactionRepo.GetByTicketID(ticketID)
+	if err == nil && existingTransaction != nil && existingTransaction.PaymentStatus == "success" {
+		return nil, "Payment failed, ticket already paid", errors.New("ticket already paid")
+	}
+
 	transaction := &domain.Transaction{
 		TicketID:      ticket.ID,
 		PaymentMethod: paymentMethod,
@@ -150,6 +155,11 @@ func (u *transactionUsecase) ProcessPayment(ticketID uint, userID uint, paymentM
 	err = u.StudioRepo.Update(&schedule.Studio)
 	if err != nil {
 		return nil, "Payment failed, studio update error", err
+	}
+
+	transaction, err = u.TransactionRepo.GetByTicketID(ticket.ID)
+	if err != nil {
+		return nil, "Payment failed, failed to retrieve transaction", err
 	}
 
 	return transaction, "Payment successful", nil

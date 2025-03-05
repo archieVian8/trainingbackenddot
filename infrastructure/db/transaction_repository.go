@@ -22,7 +22,13 @@ func (r *TransactionRepository) Create(transaction *domain.Transaction) error {
 // Get transactions based on ticket ID
 func (r *TransactionRepository) GetByTicketID(ticketID uint) (*domain.Transaction, error) {
 	var transaction domain.Transaction
-	if err := r.DB.Where("ticket_id = ?", ticketID).First(&transaction).Error; err != nil {
+	if err := r.DB.
+		Preload("Ticket").
+		Preload("Ticket.Schedule").
+		Preload("Ticket.Schedule.Studio").
+		Preload("Ticket.Schedule.Film").
+		Where("ticket_id = ?", ticketID).
+		First(&transaction).Error; err != nil {
 		return nil, err
 	}
 	return &transaction, nil

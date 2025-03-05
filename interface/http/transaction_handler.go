@@ -30,7 +30,7 @@ func (h *TransactionHandler) PayTicket(c *gin.Context) {
 		return
 	}
 
-	ticketID, err := strconv.ParseUint(c.Param("ticket_id"), 10, 64)
+	ticketID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid ticket ID"})
 		return
