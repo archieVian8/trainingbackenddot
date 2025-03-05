@@ -12,6 +12,11 @@ type TransactionUsecase interface {
 	PayTicket(ticketID uint, paymentMethod string) error
 	GetAllTransactions() ([]domain.Transaction, error)
 	ProcessPayment(ticketID uint, userID uint, paymentMethod string, amount float64) (*domain.Transaction, string, error)
+
+	GetDailySalesReportByFilm(date string) ([]domain.FilmSalesReport, error)
+	GetMonthlySalesReportByFilm(month string) ([]domain.FilmSalesReport, error)
+	GetDailySalesReportByStudio(date string) ([]domain.StudioSalesReport, error)
+	GetMonthlySalesReportByStudio(month string) ([]domain.StudioSalesReport, error)
 }
 
 type transactionUsecase struct {
@@ -163,4 +168,24 @@ func (u *transactionUsecase) ProcessPayment(ticketID uint, userID uint, paymentM
 	}
 
 	return transaction, "Payment successful", nil
+}
+
+// Function to Get Daily Film Sales Report
+func (u *transactionUsecase) GetDailySalesReportByFilm(date string) ([]domain.FilmSalesReport, error) {
+	return u.TransactionRepo.FetchDailySalesReportByFilm(date)
+}
+
+// Function to Get Monthly Film Sales Report
+func (u *transactionUsecase) GetMonthlySalesReportByFilm(month string) ([]domain.FilmSalesReport, error) {
+	return u.TransactionRepo.FetchMonthlySalesReportByFilm(month)
+}
+
+// Function to Get Daily Studio Sales Report
+func (u *transactionUsecase) GetDailySalesReportByStudio(date string) ([]domain.StudioSalesReport, error) {
+	return u.TransactionRepo.FetchDailySalesReportByStudio(date)
+}
+
+// Function to Get Monthly Studio Sales Report
+func (u *transactionUsecase) GetMonthlySalesReportByStudio(month string) ([]domain.StudioSalesReport, error) {
+	return u.TransactionRepo.FetchMonthlySalesReportByStudio(month)
 }

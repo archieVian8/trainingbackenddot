@@ -58,3 +58,63 @@ func (h *TransactionHandler) ViewAllTransactions(c *gin.Context) {
 
 	c.JSON(http.StatusOK, transactions)
 }
+
+// Endpoint Admin View Daily Film Sales Report
+func (h *TransactionHandler) ViewDailySalesByFilm(c *gin.Context) {
+	date := c.Query("date")
+	if date == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Date parameter is required (YYYY-MM-DD)"})
+		return
+	}
+	reports, err := h.TransactionUC.GetDailySalesReportByFilm(date)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, reports)
+}
+
+// Endpoint Admin View Monthly Film Sales Report
+func (h *TransactionHandler) ViewMonthlySalesByFilm(c *gin.Context) {
+	month := c.Query("date")
+	if month == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Month parameter is required (YYYY-MM)"})
+		return
+	}
+	reports, err := h.TransactionUC.GetMonthlySalesReportByFilm(month)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, reports)
+}
+
+// Endpoint Admin View Daily Studio Sales Report
+func (h *TransactionHandler) ViewDailySalesByStudio(c *gin.Context) {
+	date := c.Query("date")
+	if date == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Date parameter is required (YYYY-MM-DD)"})
+		return
+	}
+	reports, err := h.TransactionUC.GetDailySalesReportByStudio(date)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, reports)
+}
+
+// Endpoint Admin View Monthly Studio Sales Report
+func (h *TransactionHandler) ViewMonthlySalesByStudio(c *gin.Context) {
+	month := c.Query("date")
+	if month == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Month parameter is required (YYYY-MM)"})
+		return
+	}
+	reports, err := h.TransactionUC.GetMonthlySalesReportByStudio(month)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, reports)
+}

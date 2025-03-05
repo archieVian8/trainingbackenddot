@@ -57,6 +57,11 @@ func SetupRouter(
 			transactions := admin.Group("/transactions")
 			{
 				transactions.GET("/viewall", transactionHandler.ViewAllTransactions)
+				transactions.GET("/viewfilm/daily", transactionHandler.ViewDailySalesByFilm)
+				transactions.GET("/viewfilm/monthly", transactionHandler.ViewMonthlySalesByFilm)
+				transactions.GET("/viewstudio/daily", transactionHandler.ViewDailySalesByStudio)
+				transactions.GET("/viewstudio/monthly", transactionHandler.ViewMonthlySalesByStudio)
+
 			}
 
 		}
