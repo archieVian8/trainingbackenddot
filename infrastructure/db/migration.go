@@ -20,6 +20,7 @@ func MigrateDatabase() {
 		&domain.Schedule{},
 		&domain.Ticket{},
 		&domain.Transaction{},
+		&domain.Notification{},
 	)
 	if err != nil {
 		log.Fatal("Failed to migrate:", err)

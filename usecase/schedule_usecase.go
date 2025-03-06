@@ -38,3 +38,13 @@ func (u *ScheduleUsecase) DeleteSchedule(id uint) error {
 func (u *ScheduleUsecase) ApplyPromo(id uint, promo int, promoTime, promoEnds time.Time) error {
 	return u.ScheduleRepo.SetPromo(id, promo, promoTime, promoEnds)
 }
+
+// Function for Get Schedule By ID
+func (uc *ScheduleUsecase) GetScheduleByID(id int) (*domain.Schedule, error) {
+	var schedule domain.Schedule
+	err := uc.ScheduleRepo.DB.Preload("Film").Preload("Studio").First(&schedule, id).Error
+	if err != nil {
+		return nil, err
+	}
+	return &schedule, nil
+}

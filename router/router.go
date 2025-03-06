@@ -13,7 +13,8 @@ func SetupRouter(
 	filmHandler *http.FilmHandler,
 	scheduleHandler *http.ScheduleHandler,
 	ticketHandler *http.TicketHandler,
-	transactionHandler *http.TransactionHandler) *gin.Engine {
+	transactionHandler *http.TransactionHandler,
+	notificationHandler *http.NotificationHandler) *gin.Engine {
 	router := gin.Default()
 
 	api := router.Group("/api")
@@ -90,6 +91,12 @@ func SetupRouter(
 			transaction := user.Group("/transactions")
 			{
 				transaction.POST("/pay/:id", transactionHandler.PayTicket)
+			}
+
+			// Notification
+			notification := user.Group("/notifications")
+			{
+				notification.GET("/viewall", notificationHandler.GetNotifications)
 			}
 		}
 	}

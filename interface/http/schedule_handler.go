@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -11,11 +12,15 @@ import (
 )
 
 type ScheduleHandler struct {
-	ScheduleUC *usecase.ScheduleUsecase
+	ScheduleUC     *usecase.ScheduleUsecase
+	NotificationUC *usecase.NotificationUsecase
 }
 
-func NewScheduleHandler(scheduleoUC *usecase.ScheduleUsecase) *ScheduleHandler {
-	return &ScheduleHandler{ScheduleUC: scheduleoUC}
+func NewScheduleHandler(scheduleoUC *usecase.ScheduleUsecase, notificationUC *usecase.NotificationUsecase) *ScheduleHandler {
+	return &ScheduleHandler{
+		ScheduleUC:     scheduleoUC,
+		NotificationUC: notificationUC,
+	}
 }
 
 // Endpoint Create New Schedule
@@ -31,6 +36,15 @@ func (h *ScheduleHandler) CreateSchedule(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create schedule", "details": err.Error()})
 		return
 	}
+
+	scheduleWithFilm, err := h.ScheduleUC.GetScheduleByID(int(schedule.ID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve schedule data"})
+		return
+	}
+
+	message := fmt.Sprintf("A new schedule has been made for the film %s", scheduleWithFilm.Film.Title)
+	h.NotificationUC.SendNotification(message)
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Schedule created successfully"})
 }
@@ -123,5 +137,25 @@ func (h *ScheduleHandler) ApplyPromo(c *gin.Context) {
 		return
 	}
 
+	schedule, err := h.ScheduleUC.GetScheduleByID(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil data jadwal"})
+		return
+	}
+
+	message := fmt.Sprintf(
+		"New discount available!\nFilm: %s\nStudio: %s\nSchedule: %s\nPrice: Rp%.2f\nDiscount: %d%%\nPromo Price: Rp%.2f",
+		schedule.Film.Title,
+		schedule.Studio.Name,
+		schedule.ShowTime,
+		schedule.Price,
+		schedule.Promo,
+		schedule.PromoPrice,
+	)
+
+	// Send notification to user
+	h.NotificationUC.SendNotification(message)
+
 	c.JSON(http.StatusOK, gin.H{"message": "Promo applied successfully"})
+
 }
